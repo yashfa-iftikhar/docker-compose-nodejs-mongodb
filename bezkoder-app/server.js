@@ -4,45 +4,44 @@ const cors = require("cors");
 
 const app = express();
 
-// CORS configuration
-const corsOptions = {
-  origin: "http://localhost:8081", // frontend URL
+var corsOptions = {
+  origin: "http://localhost:8081"
 };
+
 app.use(cors(corsOptions));
 
-// Parse requests of content-type - application/json
+// parse requests of content-type - application/json
 app.use(express.json());
 
-// Parse requests of content-type - application/x-www-form-urlencoded
+// parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
-// Import database connection and models
 const db = require("./app/models");
+
+console.log(db.url);
 
 db.mongoose
   .connect(db.url, {
     useNewUrlParser: true,
-    useUnifiedTopology: true,
+    useUnifiedTopology: true
   })
   .then(() => {
-    console.log("✅ Connected to the database!");
+    console.log("Connected to the database!");
   })
-  .catch((err) => {
-    console.error("❌ Cannot connect to the database!", err);
-    process.exit(1);
+  .catch(err => {
+    console.log("Cannot connect to the database!", err);
+    process.exit();
   });
 
-// Simple base route
+// simple route
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to bezkoder application." });
 });
 
-// Load routes
-require("./app/routes/tutorial.routes")(app);
+require("./app/routes/turorial.routes")(app);
 
-// Set port from environment or fallback to 8080
+// set port, listen for requests
 const PORT = process.env.NODE_DOCKER_PORT || 8080;
 app.listen(PORT, () => {
-  console.log(`🚀 Server is running on port ${PORT}.`);
+  console.log(`Server is running on port ${PORT}.`);
 });
-
